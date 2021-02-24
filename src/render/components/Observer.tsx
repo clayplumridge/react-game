@@ -1,45 +1,37 @@
 import * as React from "react";
-import { IObservableValue, ObservableValue } from "../core/Observable";
+import { IObservableValue } from "../core/Observable";
 
 type UnpackObservable<T> = T extends IObservableValue<infer Q> ? Q : never;
-
-interface ObservableBag {
-    [key: string]: IObservableValue<any>;
-}
+type ObservableBag = Record<string, IObservableValue<unknown>>;
+type UnpackedObservableBag<T extends ObservableBag> = {
+    [propName in keyof T]: UnpackObservable<T[propName]>;
+};
 
 export interface ObserverProps<T extends ObservableBag> {
-    children: (
-        values: { [propName in keyof T]: UnpackObservable<T[propName]> }
-    ) => JSX.Element;
-
+    /**
+     * Strongly-typed React children for functional child smartness
+     */
+    children: (values: UnpackedObservableBag<T>) => JSX.Element;
     observed: T;
 }
 
-function fromEntries<T>(iterable: [string, T][]) {
-    return [...iterable].reduce((obj, [key, val]) => {
-        obj[key] = val;
-        return obj;
-    }, {} as Record<string, T>);
-}
-
-/**
- * TODO: Typing is kinda a mess in here. Would be better to get things happier so we can avoid issues down the road
- */
 export function Observer<T extends ObservableBag>({
     children,
     observed
 }: ObserverProps<T>) {
-    const [observedValues, setObservedValues] = React.useState(() => {
-        const res = fromEntries(
-            Object.entries(observed).map(([key, val]) => [key, val.value])
+    const [observedValues, setObservedValues] = React.useState<
+        UnpackedObservableBag<T>
+    >(() => {
+        const keys = Object.keys(observed) as (keyof T)[];
+        return keys.reduce(
+            (rollup, key) => ({ ...rollup, [key]: observed[key].value }),
+            {} as UnpackedObservableBag<T>
         );
-
-        return res;
     });
 
     const updateObservedValues = <Key extends keyof T>(
         key: Key,
-        val: T[Key]
+        val: T[Key]["value"]
     ) => {
         setObservedValues({ ...observedValues, [key]: val });
     };
@@ -53,9 +45,5 @@ export function Observer<T extends ObservableBag>({
         }
     });
 
-    return children(
-        observedValues as {
-            [propName in keyof T]: UnpackObservable<T[propName]>;
-        }
-    );
+    return children(observedValues);
 }

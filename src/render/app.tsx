@@ -11,7 +11,12 @@ import {
 import * as React from "react";
 import { Blade } from "./state/BladeManager";
 import { Observer } from "./components/Observer";
-import { ObservableValue } from "./core/Observable";
+import {
+    IObservableArray,
+    IObservableValue,
+    ObservableArray,
+    ObservableValue
+} from "./core/Observable";
 
 const sidebarWidth = 240;
 
@@ -42,17 +47,23 @@ const BladeContentMap: Record<Blade, () => JSX.Element> = {
         const testOne = new ObservableValue<string>("big yeetus");
         const testTwo = new ObservableValue<string>("thicc bonkus");
 
+        const testArr = new ObservableArray<number>([1, 2, 3, 4]);
+
         return (
             <>
                 <Observer
                     observed={{
                         testOne,
-                        testTwo
+                        testTwo,
+                        testArr
                     }}
                 >
-                    {({ testOne, testTwo }) => (
+                    {({ testOne, testTwo, testArr }) => (
                         <div>
-                            {testOne} vs {testTwo} FIGHT
+                            <div>
+                                {testOne} vs {testTwo} FIGHT
+                            </div>
+                            <div>{testArr.join(",")}</div>
                         </div>
                     )}
                 </Observer>
@@ -63,6 +74,13 @@ const BladeContentMap: Record<Blade, () => JSX.Element> = {
                     }}
                 >
                     Click me
+                </Button>
+                <Button
+                    onClick={() => {
+                        testArr.push(-1, -2, -3);
+                    }}
+                >
+                    Click me to add things
                 </Button>
             </>
         );
