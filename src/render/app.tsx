@@ -8,6 +8,9 @@ import {
     Typography
 } from "@material-ui/core";
 import * as React from "react";
+import { Blade } from "./state/BladeManager";
+import { Observer } from "./components/Observer";
+import { ObservableValue } from "./core/Observable";
 
 const sidebarWidth = 240;
 
@@ -29,6 +32,27 @@ const useStyles = makeStyles(theme =>
     })
 );
 
+const BladeItemPropMap: Record<Blade, {}> = {
+    TestBlade: {}
+};
+
+const BladeContentMap: Record<Blade, () => JSX.Element> = {
+    TestBlade: () => (
+        <Observer
+            observed={{
+                testOne: new ObservableValue<string>("big yeetus"),
+                testTwo: new ObservableValue<string>("thicc bonkus")
+            }}
+        >
+            {({ testOne, testTwo }) => (
+                <div>
+                    {testOne} vs {testTwo} FIGHT
+                </div>
+            )}
+        </Observer>
+    )
+};
+
 export default function App() {
     const styles = useStyles();
 
@@ -46,7 +70,9 @@ export default function App() {
                 <Typography>Test sidebar text 240</Typography>
             </Drawer>
 
-            <main className={styles.content}>Test content</main>
+            <main className={styles.content}>
+                {BladeContentMap[Blade.TestBlade]()}
+            </main>
         </div>
     );
 }
