@@ -1,5 +1,6 @@
 import {
     AppBar,
+    Button,
     createStyles,
     CssBaseline,
     Drawer,
@@ -37,20 +38,35 @@ const BladeItemPropMap: Record<Blade, {}> = {
 };
 
 const BladeContentMap: Record<Blade, () => JSX.Element> = {
-    TestBlade: () => (
-        <Observer
-            observed={{
-                testOne: new ObservableValue<string>("big yeetus"),
-                testTwo: new ObservableValue<string>("thicc bonkus")
-            }}
-        >
-            {({ testOne, testTwo }) => (
-                <div>
-                    {testOne} vs {testTwo} FIGHT
-                </div>
-            )}
-        </Observer>
-    )
+    TestBlade: () => {
+        const testOne = new ObservableValue<string>("big yeetus");
+        const testTwo = new ObservableValue<string>("thicc bonkus");
+
+        return (
+            <>
+                <Observer
+                    observed={{
+                        testOne,
+                        testTwo
+                    }}
+                >
+                    {({ testOne, testTwo }) => (
+                        <div>
+                            {testOne} vs {testTwo} FIGHT
+                        </div>
+                    )}
+                </Observer>
+
+                <Button
+                    onClick={() => {
+                        testOne.value = "u clicked it didnt u";
+                    }}
+                >
+                    Click me
+                </Button>
+            </>
+        );
+    }
 };
 
 export default function App() {

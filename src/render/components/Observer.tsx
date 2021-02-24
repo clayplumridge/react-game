@@ -22,25 +22,34 @@ function fromEntries<T>(iterable: [string, T][]) {
     }, {} as Record<string, T>);
 }
 
+/**
+ * TODO: Typing is kinda a mess in here. Would be better to get things happier so we can avoid issues down the road
+ */
 export function Observer<T extends ObservableBag>({
     children,
     observed
 }: ObserverProps<T>) {
     const [observedValues, setObservedValues] = React.useState(() => {
-        const keys = Object.keys(observed) as (keyof T)[];
-
         const res = fromEntries(
             Object.entries(observed).map(([key, val]) => [key, val.value])
         );
 
-        console.log(res);
-
         return res;
     });
 
+    const updateObservedValues = <Key extends keyof T>(
+        key: Key,
+        val: T[Key]
+    ) => {
+        setObservedValues({ ...observedValues, [key]: val });
+    };
+
     React.useEffect(() => {
-        for (let observable of Object.values(observed)) {
-            observable.on("change", change => {});
+        for (let key of Object.keys(observed)) {
+            const observable = observed[key];
+            observable.on("change", change =>
+                updateObservedValues(key, change.new)
+            );
         }
     });
 
