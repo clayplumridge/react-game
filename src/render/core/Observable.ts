@@ -1,4 +1,4 @@
-import { createEmitter, Emitter, EventMap } from "./EventEmitter";
+import { createEmitter, Emitter, EventMap } from "@/render/core/EventEmitter";
 
 interface ObservableValueEventMap<T> extends EventMap {
     change: ObservableChange<T>;

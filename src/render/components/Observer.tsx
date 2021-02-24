@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IObservableValue } from "../core/Observable";
+import { IObservableValue } from "@/render/core/Observable";
 
 type UnpackObservable<T> = T extends IObservableValue<infer Q> ? Q : never;
 type ObservableBag = Record<string, IObservableValue<unknown>>;

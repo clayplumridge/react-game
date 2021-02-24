@@ -1,15 +1,18 @@
 import {
-    Button,
     createStyles,
     CssBaseline,
+    Divider,
     Drawer,
     makeStyles,
+    ThemeProvider,
     Typography
 } from "@material-ui/core";
 import * as React from "react";
-import { Blade } from "./state/BladeManager";
-import { Observer } from "./components/Observer";
-import { ObservableArray, ObservableValue } from "./core/Observable";
+import { Blade, BladeManager } from "@/render/state/BladeManager";
+import { Observer } from "@/render/components/Observer";
+import { theme } from "@/render/theme";
+import { HomeBlade, PlaygroundBlade } from "@/render/blades";
+import { BladeSidebarContent } from "@/render/blades/BladeSidebarContent";
 
 const sidebarWidth = 240;
 
@@ -31,75 +34,40 @@ const useStyles = makeStyles(theme =>
     })
 );
 
-const BladeItemPropMap: Record<Blade, {}> = {
-    TestBlade: {}
-};
-
 const BladeContentMap: Record<Blade, () => JSX.Element> = {
-    TestBlade: () => {
-        const testOne = new ObservableValue<string>("big yeetus");
-        const testTwo = new ObservableValue<string>("thicc bonkus");
-
-        const testArr = new ObservableArray<number>([1, 2, 3, 4]);
-
-        return (
-            <>
-                <Observer
-                    observed={{
-                        testOne,
-                        testTwo,
-                        testArr
-                    }}
-                >
-                    {({ testOne, testTwo, testArr }) => (
-                        <div>
-                            <div>
-                                {testOne} vs {testTwo} FIGHT
-                            </div>
-                            <div>{testArr.join(",")}</div>
-                        </div>
-                    )}
-                </Observer>
-
-                <Button
-                    onClick={() => {
-                        testOne.value = "u clicked it didnt u";
-                    }}
-                >
-                    Click me
-                </Button>
-                <Button
-                    onClick={() => {
-                        testArr.push(-1, -2, -3);
-                    }}
-                >
-                    Click me to add things
-                </Button>
-            </>
-        );
-    }
+    [Blade.Home]: () => <HomeBlade />,
+    [Blade.Playground]: () => <PlaygroundBlade />
 };
 
 export default function App() {
     const styles = useStyles();
 
     return (
-        <div className={styles.root}>
-            <CssBaseline />
+        <ThemeProvider theme={theme}>
+            <div className={styles.root}>
+                <CssBaseline />
 
-            <Drawer
-                className={styles.sidebar}
-                classes={{ paper: styles.sidebarPaper }}
-                variant="permanent"
-                anchor="left"
-            >
-                <Typography>Test sidebar text 120</Typography>
-                <Typography>Test sidebar text 240</Typography>
-            </Drawer>
+                <Drawer
+                    className={styles.sidebar}
+                    classes={{ paper: styles.sidebarPaper }}
+                    variant="permanent"
+                    anchor="left"
+                >
+                    <Typography>Logo goes here</Typography>
+                    <Divider />
+                    <BladeSidebarContent />
+                </Drawer>
 
-            <main className={styles.content}>
-                {BladeContentMap[Blade.TestBlade]()}
-            </main>
-        </div>
+                <main className={styles.content}>
+                    <Observer
+                        observed={{
+                            currentBlade: BladeManager.getCurrentBlade()
+                        }}
+                    >
+                        {({ currentBlade }) => BladeContentMap[currentBlade]()}
+                    </Observer>
+                </main>
+            </div>
+        </ThemeProvider>
     );
 }

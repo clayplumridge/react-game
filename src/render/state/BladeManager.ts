@@ -1,21 +1,20 @@
 import {
-    IObservableValue,
     IReadonlyObservableValue,
     ObservableValue
-} from "../core/Observable";
+} from "@/render/core/Observable";
 
 export const enum Blade {
-    TestBlade = "TestBlade"
+    Home = "home",
+    Playground = "playground"
 }
 
-export class BladeManager {
-    private readonly currentBlade: IObservableValue<Blade>;
+interface IBladeManager {
+    getCurrentBlade(): IReadonlyObservableValue<Blade>;
+    setCurrentBlade(val: Blade): void;
+}
 
-    constructor(currentBlade?: Blade) {
-        this.currentBlade = new ObservableValue<Blade>(
-            currentBlade || Blade.TestBlade
-        );
-    }
+class BladeManagerImpl implements IBladeManager {
+    private readonly currentBlade = new ObservableValue<Blade>(Blade.Home);
 
     public getCurrentBlade(): IReadonlyObservableValue<Blade> {
         return this.currentBlade;
@@ -25,3 +24,5 @@ export class BladeManager {
         this.currentBlade.value = val;
     }
 }
+
+export const BladeManager = new BladeManagerImpl();
