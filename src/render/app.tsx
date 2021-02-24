@@ -1,22 +1,15 @@
 import {
-    AppBar,
     Button,
     createStyles,
     CssBaseline,
     Drawer,
     makeStyles,
-    Toolbar,
     Typography
 } from "@material-ui/core";
 import * as React from "react";
 import { Blade } from "./state/BladeManager";
 import { Observer } from "./components/Observer";
-import {
-    IObservableArray,
-    IObservableValue,
-    ObservableArray,
-    ObservableValue
-} from "./core/Observable";
+import { ObservableArray, ObservableValue } from "./core/Observable";
 
 const sidebarWidth = 240;
 
