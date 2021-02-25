@@ -12,9 +12,8 @@ import * as React from "react";
 import { Blade, BladeManager } from "@/render/state/BladeManager";
 import { Observer } from "@/render/components/Observer";
 import { theme } from "@/render/theme";
-import { HomeBlade, PlaygroundBlade } from "@/render/blades";
+import { HomeBlade, PlaygroundBlade, SettingsBlade } from "@/render/blades";
 import { BladeSidebarContent } from "@/render/blades/BladeSidebarContent";
-import { SettingsBlade } from "./blades/SettingsBlade";
 
 const sidebarWidth = 240;
 
@@ -63,6 +62,7 @@ export default function App() {
                     display="flex"
                     flexDirection="column"
                     flexGrow={1}
+                    p={1}
                 >
                     <Observer
                         observed={{
