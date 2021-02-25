@@ -5,7 +5,8 @@ import {
 
 export const enum Blade {
     Home = "home",
-    Playground = "playground"
+    Playground = "playground",
+    Settings = "settings"
 }
 
 interface IBladeManager {

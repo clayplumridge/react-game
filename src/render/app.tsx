@@ -13,6 +13,7 @@ import { Observer } from "@/render/components/Observer";
 import { theme } from "@/render/theme";
 import { HomeBlade, PlaygroundBlade } from "@/render/blades";
 import { BladeSidebarContent } from "@/render/blades/BladeSidebarContent";
+import { SettingsBlade } from "./blades/SettingsBlade";
 
 const sidebarWidth = 240;
 
@@ -36,7 +37,8 @@ const useStyles = makeStyles(theme =>
 
 const BladeContentMap: Record<Blade, () => JSX.Element> = {
     [Blade.Home]: () => <HomeBlade />,
-    [Blade.Playground]: () => <PlaygroundBlade />
+    [Blade.Playground]: () => <PlaygroundBlade />,
+    [Blade.Settings]: () => <SettingsBlade />
 };
 
 export default function App() {

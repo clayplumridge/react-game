@@ -1,11 +1,11 @@
 import * as React from "react";
 import { Blade, BladeManager } from "@/render/state/BladeManager";
 import {
-    Box,
     ListItem,
     List,
     ListItemIcon,
-    ListItemText
+    ListItemText,
+    Divider
 } from "@material-ui/core";
 import * as Icons from "@material-ui/icons";
 
@@ -32,17 +32,24 @@ const BladeItemPropMap: Record<Blade, BladeItemProps> = {
     },
     [Blade.Playground]: {
         alignment: BladeAlignment.Bottom,
-        order: 999,
+        order: 0,
         icon: () => <Icons.AccessAlarm />,
         id: Blade.Playground,
         text: "Playground"
+    },
+    [Blade.Settings]: {
+        alignment: BladeAlignment.Bottom,
+        icon: () => <Icons.Settings />,
+        id: Blade.Settings,
+        order: 999,
+        text: "Settings"
     }
 };
 
 function getAlignedBlades(alignment: BladeAlignment) {
     return Object.values(BladeItemPropMap)
         .filter(x => x.alignment == alignment)
-        .sort((a, b) => a.order - b.order);
+        .sort((a, b) => b.order - a.order);
 }
 
 export const BladeSidebarContent: React.FunctionComponent<{}> = () => {
@@ -58,6 +65,7 @@ export const BladeSidebarContent: React.FunctionComponent<{}> = () => {
             </List>
 
             <List style={{ marginTop: "auto" }}>
+                <Divider />
                 {bottomBlades.map(({ id }) => (
                     <BladeListItem key={id} {...BladeItemPropMap[id]} />
                 ))}
