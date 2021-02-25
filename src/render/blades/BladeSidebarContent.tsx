@@ -51,7 +51,7 @@ const BladeItemPropMap: Record<Blade, Omit<BladeItemProps, "selected">> = {
 function getAlignedBlades(alignment: BladeAlignment) {
     return Object.values(BladeItemPropMap)
         .filter(x => x.alignment == alignment)
-        .sort((a, b) => b.order - a.order);
+        .sort((a, b) => a.order - b.order);
 }
 
 export const BladeSidebarContent: React.FunctionComponent<{}> = () => {
