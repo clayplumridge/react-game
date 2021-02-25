@@ -37,13 +37,19 @@ export function Observer<T extends ObservableBag>({
     };
 
     React.useEffect(() => {
-        for (let key of Object.keys(observed)) {
-            const observable = observed[key];
-            observable.on("change", change =>
+        Object.keys(observed).forEach(key =>
+            observed[key].on("change", change =>
                 updateObservedValues(key, change.new)
+            )
+        );
+
+        return () =>
+            Object.keys(observed).forEach(key =>
+                observed[key].off("change", change =>
+                    updateObservedValues(key, change.new)
+                )
             );
-        }
-    });
+    }, []);
 
     return children(observedValues);
 }

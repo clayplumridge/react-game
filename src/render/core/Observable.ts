@@ -4,7 +4,7 @@ interface ObservableValueEventMap<T> extends EventMap {
     change: ObservableChange<T>;
 }
 
-interface ObservableChange<T> {
+export interface ObservableChange<T> {
     old: T;
     new: T;
 }
