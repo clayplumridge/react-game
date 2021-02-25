@@ -1,4 +1,5 @@
 import {
+    Box,
     createStyles,
     CssBaseline,
     Divider,
@@ -20,7 +21,7 @@ const sidebarWidth = 240;
 const useStyles = makeStyles(theme =>
     createStyles({
         root: {
-            display: "flex"
+            height: "100%"
         },
         sidebar: {
             width: sidebarWidth,
@@ -28,9 +29,6 @@ const useStyles = makeStyles(theme =>
         },
         sidebarPaper: {
             width: sidebarWidth
-        },
-        content: {
-            flexGrow: 1
         }
     })
 );
@@ -46,7 +44,7 @@ export default function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <div className={styles.root}>
+            <Box className={styles.root} display="flex">
                 <CssBaseline />
 
                 <Drawer
@@ -60,7 +58,12 @@ export default function App() {
                     <BladeSidebarContent />
                 </Drawer>
 
-                <main className={styles.content}>
+                <Box
+                    component="main"
+                    display="flex"
+                    flexDirection="column"
+                    flexGrow={1}
+                >
                     <Observer
                         observed={{
                             currentBlade: BladeManager.getCurrentBlade()
@@ -68,8 +71,8 @@ export default function App() {
                     >
                         {({ currentBlade }) => BladeContentMap[currentBlade]()}
                     </Observer>
-                </main>
-            </div>
+                </Box>
+            </Box>
         </ThemeProvider>
     );
 }
