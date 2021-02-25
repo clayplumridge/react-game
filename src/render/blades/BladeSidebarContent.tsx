@@ -8,12 +8,14 @@ import {
     Divider
 } from "@material-ui/core";
 import * as Icons from "@material-ui/icons";
+import { Observer } from "@/render/components/Observer";
 
 interface BladeItemProps {
     alignment: BladeAlignment;
     icon: () => JSX.Element;
     id: Blade;
     order: number;
+    selected: boolean;
     text: string;
 }
 
@@ -22,7 +24,7 @@ const enum BladeAlignment {
     Bottom = "bottom"
 }
 
-const BladeItemPropMap: Record<Blade, BladeItemProps> = {
+const BladeItemPropMap: Record<Blade, Omit<BladeItemProps, "selected">> = {
     [Blade.Home]: {
         alignment: BladeAlignment.Top,
         order: 0,
@@ -57,30 +59,47 @@ export const BladeSidebarContent: React.FunctionComponent<{}> = () => {
     const bottomBlades = getAlignedBlades(BladeAlignment.Bottom);
 
     return (
-        <>
-            <List>
-                {topBlades.map(({ id }) => (
-                    <BladeListItem key={id} {...BladeItemPropMap[id]} />
-                ))}
-            </List>
+        <Observer observed={{ currentBlade: BladeManager.getCurrentBlade() }}>
+            {({ currentBlade }) => (
+                <>
+                    <List>
+                        {topBlades.map(({ id }) => (
+                            <BladeListItem
+                                key={id}
+                                selected={currentBlade == id}
+                                {...BladeItemPropMap[id]}
+                            />
+                        ))}
+                    </List>
 
-            <List style={{ marginTop: "auto" }}>
-                <Divider />
-                {bottomBlades.map(({ id }) => (
-                    <BladeListItem key={id} {...BladeItemPropMap[id]} />
-                ))}
-            </List>
-        </>
+                    <List style={{ marginTop: "auto" }}>
+                        <Divider />
+                        {bottomBlades.map(({ id }) => (
+                            <BladeListItem
+                                key={id}
+                                selected={currentBlade == id}
+                                {...BladeItemPropMap[id]}
+                            />
+                        ))}
+                    </List>
+                </>
+            )}
+        </Observer>
     );
 };
 
 const BladeListItem: React.FunctionComponent<BladeItemProps> = ({
     id,
     icon,
+    selected,
     text
 }) => {
     return (
-        <ListItem button onClick={() => BladeManager.setCurrentBlade(id)}>
+        <ListItem
+            button
+            onClick={() => BladeManager.setCurrentBlade(id)}
+            selected={selected}
+        >
             <ListItemIcon>{icon()}</ListItemIcon>
             <ListItemText primary={text} />
         </ListItem>
