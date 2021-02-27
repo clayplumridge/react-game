@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         progress: {
             width: "100%"
+        },
+        progressBar: {
+            transition: "none"
         }
     })
 );
@@ -40,8 +43,11 @@ const activityDisplayPropsMap: Record<TestActivities, ActivityDisplayProps> = {
 };
 
 const testManager = new ActivityManager<TestActivities>({
-    [TestActivities.First]: 10,
-    [TestActivities.Second]: 5
+    [TestActivities.First]: {
+        timeInMs: 10000,
+        onComplete: () => console.log("tick")
+    },
+    [TestActivities.Second]: { timeInMs: 5000 }
 });
 
 export const HomeBlade: React.FunctionComponent<{}> = () => {
@@ -90,6 +96,7 @@ export const HomeBlade: React.FunctionComponent<{}> = () => {
                     >
                         {({ progressValue }) => (
                             <LinearProgress
+                                classes={{ bar: styles.progressBar }}
                                 className={styles.progress}
                                 variant="determinate"
                                 value={progressValue || 0}
@@ -97,9 +104,6 @@ export const HomeBlade: React.FunctionComponent<{}> = () => {
                         )}
                     </Observer>
                 </Paper>
-            </Grid>
-            <Grid item xs={12} md={6}>
-                <Paper className={styles.paper}>Deletus</Paper>
             </Grid>
         </Grid>
     );

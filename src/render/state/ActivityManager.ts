@@ -1,4 +1,13 @@
-import { IReadonlyObservableValue, ObservableValue } from "../core/Observable";
+import {
+    IReadonlyObservableValue,
+    ObservableValue
+} from "@/render/core/Observable";
+
+export interface ActivityDetails {
+    onComplete?: () => void;
+    timeInMs: number;
+}
+
 export class ActivityManager<T extends string> {
     private readonly currentActivityId = new ObservableValue<T | undefined>(
         undefined
@@ -9,7 +18,7 @@ export class ActivityManager<T extends string> {
         | ReturnType<typeof setInterval>
         | undefined = undefined;
 
-    constructor(readonly timingMapInS: Record<T, number>) {}
+    constructor(readonly activityDetails: Record<T, ActivityDetails>) {}
 
     public getCurrentActivityId(): IReadonlyObservableValue<T | undefined> {
         return this.currentActivityId;
@@ -29,7 +38,12 @@ export class ActivityManager<T extends string> {
             ? setInterval(() => {
                   this.currentProgress.value =
                       (this.currentProgress.value + 1) % 100;
-              }, this.timingMapInS[val] * 10)
+
+                  if (this.currentProgress.value == 0) {
+                      this.activityDetails[val].onComplete &&
+                          this.activityDetails[val].onComplete!();
+                  }
+              }, this.activityDetails[val].timeInMs / 100)
             : undefined;
     }
 }
